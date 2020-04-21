@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN"
+               packages="org.apache.logging.log4j.core.layout"
+               shutdownHook="disable">
+    <Properties>
+        <!-- Uses ISO8601 time format -->
+        <Property name="time">yyyy-MM-dd'T'HH:mm:ss.SSSZ</Property>
+        <Property name="pattern">%d{${time}} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="file">logs/loggy.log</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${pattern}" />
+        </Console>
+        <File name="File" fileName="${file}">
+            <SimpleJsonLayout complete="false" compact="true" eventEol="true">
+                <KeyValuePair key="@timestamp" value="$${date:${time}}" />
+            </SimpleJsonLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console" />
+        </Root>
+        <Logger name="software.amazon.awssdk.auth.credentials" level="INFO" />
+        <Logger name="software.amazon.awssdk" level="INFO" />
+        <Logger name="io.netty.util.internal" level="INFO" />
+        <Logger name="org.apache.http.impl" level="INFO" />
+    </Loggers>
+</Configuration>
