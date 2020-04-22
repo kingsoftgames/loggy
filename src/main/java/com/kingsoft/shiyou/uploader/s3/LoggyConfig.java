@@ -68,6 +68,14 @@ public interface LoggyConfig extends Config {
     boolean s3AccelerationEnabled();
 
     /**
+     * S3 acceleration uri
+     * See https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
+     */
+    @Key("s3.acceleration.uri")
+    @DefaultValue("sgsdk.s3-accelerate.dualstack.amazonaws.com")
+    String s3AccelerationUri();
+
+    /**
      * Allow uploading logs for client
      */
     @Key("logs.enabled")
