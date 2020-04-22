@@ -46,13 +46,6 @@ public interface LoggyConfig extends Config {
     String s3Prefix();
 
     /**
-     * S3 prefix for logs
-     */
-    @Key("s3.prefix.logs")
-    @DefaultValue("logs/client/")
-    String s3PrefixLogs();
-
-    /**
      * Specifies the duration for which this presigned request should be valid.
      * After this time has expired, attempting to use the presigned request will fail. 
      */
@@ -72,15 +65,8 @@ public interface LoggyConfig extends Config {
      * See https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
      */
     @Key("s3.acceleration.uri")
-    @DefaultValue("sgsdk.s3-accelerate.dualstack.amazonaws.com")
+    @DefaultValue("")
     String s3AccelerationUri();
-
-    /**
-     * Allow uploading logs for client
-     */
-    @Key("logs.enabled")
-    @DefaultValue("true")
-    boolean logsEnabled();
 
     /**
      * The logs compression format

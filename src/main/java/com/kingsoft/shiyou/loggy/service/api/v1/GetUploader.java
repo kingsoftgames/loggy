@@ -61,9 +61,6 @@ public final class GetUploader implements Handler<RoutingContext> {
 
     @Override
     public void handle(RoutingContext rc) {
-        if (!loggyConfig.logsEnabled()) {
-            rc.fail(403);
-        }
         var request = HttpUtils.parseRequest(rc, UploadRequest.class);
         if (request != null) {
             log.debug("Received request for channel {}, deviceId {}, os {}, os version {}, appVersion {}, appId {}, network {}",
@@ -163,8 +160,8 @@ public final class GetUploader implements Handler<RoutingContext> {
     private String getS3Key(String session, Instant from, String fileExtension) {
         var ldt = LocalDateTime.ofInstant(from, ZoneOffset.UTC);
 
-        return String.format("%s%s%s/%s/%s/%s%s", loggyConfig.s3Prefix(), loggyConfig.s3PrefixLogs(),
-                ldt.getYear(), ldt.getMonth().getValue(), ldt.getDayOfMonth(), session, fileExtension);
+        return String.format("%s%s/%s/%s/%s%s", loggyConfig.s3Prefix(), ldt.getYear(), ldt.getMonth().getValue(), ldt.getDayOfMonth(),
+                session, fileExtension);
     }
 
     private String getS3DownloadUrl(PresignedPutObjectRequest presignedRequest) {
