@@ -24,6 +24,7 @@
     <lombok.version>1.18.12</lombok.version>
     <log4j2.version>2.11.2</log4j2.version>
     <owner.version>1.0.10</owner.version>
+    <micrometer.version>1.3.5</micrometer.version>
   </properties>
 
   <dependencyManagement>
@@ -51,6 +52,16 @@
         <groupId>org.aeonbits.owner</groupId>
         <artifactId>owner</artifactId>
         <version>${owner.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-micrometer-metrics</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+        <version>${micrometer.version}</version>
       </dependency>
       <dependency>
         <groupId>org.projectlombok</groupId>
@@ -213,6 +224,14 @@
     <dependency>
       <groupId>com.google.dagger</groupId>
       <artifactId>dagger</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-micrometer-metrics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
   </dependencies>
 </project>

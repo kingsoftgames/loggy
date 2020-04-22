@@ -15,6 +15,8 @@ import lombok.extern.log4j.Log4j2;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static com.kingsoft.shiyou.loggy.utils.web.RouterUtils.registerHealthCheck;
+import static com.kingsoft.shiyou.loggy.utils.web.RouterUtils.registerMetrics;
 import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
@@ -51,15 +53,21 @@ public final class LoggyService implements Async {
     }
 
     private void registerRoutes() {
-        registerDefaultRoute();
+        registerDefaultRoutes();
+        registerUtilityRoutes();
         registerApiRoutes();
     }
 
-    private void registerDefaultRoute() {
+    private void registerDefaultRoutes() {
         var route = rootRouter.route();
         route.handler(BodyHandler.create());
         route.handler(LoggerHandler.create(false, LoggerFormat.SHORT));
         route.failureHandler(ErrorHandler.create(true));
+    }
+
+    private void registerUtilityRoutes() {
+        registerHealthCheck(rootRouter);
+        registerMetrics(rootRouter);
     }
 
     private void registerApiRoutes() {
