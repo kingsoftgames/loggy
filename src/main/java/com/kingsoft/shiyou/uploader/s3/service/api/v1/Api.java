@@ -1,5 +1,6 @@
 package com.kingsoft.shiyou.uploader.s3.service.api.v1;
 
+import com.kingsoft.shiyou.uploader.s3.service.validator.UploadValidator;
 import io.vertx.ext.web.Router;
 
 import javax.inject.Inject;
@@ -12,10 +13,16 @@ import javax.inject.Singleton;
 public final class Api {
 
     @Inject
+    UploadValidator uploadValidator;
+
+    @Inject
+    GetUploader getUploader;
+
+    @Inject
     public Api() {
     }
 
     public void registerRoutes(Router router) {
-
+        router.post("/getUploader").handler(uploadValidator).handler(getUploader);
     }
 }
