@@ -90,7 +90,7 @@ public final class GetUploader implements Handler<RoutingContext> {
         var putObjectRequest = PutObjectRequest.builder()
                 .bucket(loggyConfig.s3Bucket())
                 .key(s3Key)
-                .acl(ObjectCannedACL.PUBLIC_READ)
+                .acl(ObjectCannedACL.PRIVATE)
                 .contentType(compression.contentType())
                 .build();
 
@@ -129,7 +129,7 @@ public final class GetUploader implements Handler<RoutingContext> {
                     .setUploadLogs(uploader);
             context.rc().response().end(Json.encode(response));
         } else {
-            log.error("Failed to upload logs, Reason: {}", ar.cause().getMessage());
+            log.error("Failed to upload logs", ar.cause());
             context.rc().fail(500);
         }
     }
