@@ -123,7 +123,9 @@ public final class GetUploadURL implements Handler<RoutingContext> {
             var response = new UploadResponse()
                     .setMessage(UploadResult.SUCCESS)
                     .setUploadLogs(uploader);
-            context.rc().response().end(Json.encode(response));
+            context.rc().response()
+                    .putHeader("Content-Type", "application/json")
+                    .end(Json.encode(response));
         } else {
             log.error("Failed to upload logs", ar.cause());
             context.rc().fail(500);
