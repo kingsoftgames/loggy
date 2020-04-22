@@ -35,7 +35,7 @@ public interface LoggyConfig extends Config {
      * S3 bucket to upload log file
      */
     @Key("s3.bucket")
-    @DefaultValue("sgsdk")
+    @DefaultValue("")
     String s3Bucket();
 
     /**

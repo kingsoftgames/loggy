@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  */
 @Log4j2
 @Singleton
-public final class GetUploader implements Handler<RoutingContext> {
+public final class GetUploadURL implements Handler<RoutingContext> {
 
     @Inject
     LoggyConfig loggyConfig;
@@ -56,7 +56,7 @@ public final class GetUploader implements Handler<RoutingContext> {
     S3Presigner s3Presigner;
 
     @Inject
-    public GetUploader() {
+    public GetUploadURL() {
     }
 
     @Override
@@ -120,10 +120,6 @@ public final class GetUploader implements Handler<RoutingContext> {
             context.uploadLogs(uploader);
             log.info("The presigned url of client logs: {}", presignedRequest.url());
 
-            var downloadUrl = getS3DownloadUrl(presignedRequest);
-            context.logs(generateLogs(downloadUrl));
-            log.info("The download url of client logs: {}", downloadUrl);
-
             var response = new UploadResponse()
                     .setMessage(UploadResult.SUCCESS)
                     .setUploadLogs(uploader);
@@ -153,20 +149,11 @@ public final class GetUploader implements Handler<RoutingContext> {
                 .setExpires((int) presignedRequest.expiration().getEpochSecond());
     }
 
-    private JsonObject generateLogs(String logUrl) {
-        return new JsonObject().put("url", logUrl);
-    }
-
     private String getS3Key(String session, Instant from, String fileExtension) {
         var ldt = LocalDateTime.ofInstant(from, ZoneOffset.UTC);
 
         return String.format("%s%s/%s/%s/%s%s", loggyConfig.s3Prefix(), ldt.getYear(), ldt.getMonth().getValue(), ldt.getDayOfMonth(),
                 session, fileExtension);
-    }
-
-    private String getS3DownloadUrl(PresignedPutObjectRequest presignedRequest) {
-        return String.format("https://%s%s", presignedRequest.httpRequest().host(),
-                presignedRequest.httpRequest().encodedPath());
     }
 
     private UploadContext generateUploadContext(RoutingContext rc, UploadRequest message) {

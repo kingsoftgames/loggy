@@ -16,13 +16,13 @@ public final class Api {
     UploadValidator uploadValidator;
 
     @Inject
-    GetUploader getUploader;
+    GetUploadURL getUploadURL;
 
     @Inject
     public Api() {
     }
 
     public void registerRoutes(Router router) {
-        router.post("/getUploader").handler(uploadValidator).handler(getUploader);
+        router.post("/GetUploadURL").handler(uploadValidator).handler(getUploadURL);
     }
 }
