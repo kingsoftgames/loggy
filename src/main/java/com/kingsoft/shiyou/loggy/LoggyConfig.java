@@ -38,6 +38,14 @@ public interface LoggyConfig extends Config {
     @DefaultValue("")
     String s3Bucket();
 
+
+    /**
+     * S3 acl to access objects
+     */
+    @Key("s3.object.acl")
+    @DefaultValue("private")
+    String s3ObjectAcl();
+
     /**
      * S3 prefix
      */

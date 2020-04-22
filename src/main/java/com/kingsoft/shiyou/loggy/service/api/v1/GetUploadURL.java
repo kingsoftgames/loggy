@@ -90,7 +90,7 @@ public final class GetUploadURL implements Handler<RoutingContext> {
         var putObjectRequest = PutObjectRequest.builder()
                 .bucket(loggyConfig.s3Bucket())
                 .key(s3Key)
-                .acl(ObjectCannedACL.PRIVATE)
+                .acl(ObjectCannedACL.fromValue(loggyConfig.s3ObjectAcl()))
                 .contentType(compression.contentType())
                 .build();
 
