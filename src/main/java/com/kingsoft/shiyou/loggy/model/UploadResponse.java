@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3.model;
+package com.kingsoft.shiyou.loggy.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.vertx.core.json.Json;
@@ -18,7 +18,7 @@ import java.util.Map;
 @NoArgsConstructor
 public final class UploadResponse {
     /**
-     * {@link com.kingsoft.shiyou.uploader.s3.constant.UploadResult}
+     * {@link com.kingsoft.shiyou.loggy.constant.UploadResult}
      */
     private String message;
 

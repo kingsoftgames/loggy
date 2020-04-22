@@ -1,6 +1,6 @@
-package com.kingsoft.shiyou.uploader.s3.dagger;
+package com.kingsoft.shiyou.loggy.dagger;
 
-import com.kingsoft.shiyou.uploader.s3.LoggyConfig;
+import com.kingsoft.shiyou.loggy.LoggyConfig;
 import dagger.Module;
 import dagger.Provides;
 import io.vertx.core.Vertx;

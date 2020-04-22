@@ -12,8 +12,8 @@
   <properties>
     <java.version>11</java.version>
     <fat.jar.name>loggy</fat.jar.name>
-    <main.class>com.kingsoft.shiyou.uploader.s3.Loggy</main.class>
-    <main.verticle>com.kingsoft.shiyou.uploader.s3.LoggyVerticle</main.verticle>
+    <main.class>com.kingsoft.shiyou.loggy.Loggy</main.class>
+    <main.verticle>com.kingsoft.shiyou.loggy.LoggyVerticle</main.verticle>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
     <os-maven-plugin.version>1.6.2</os-maven-plugin.version>

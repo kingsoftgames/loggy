@@ -1,9 +1,9 @@
-package com.kingsoft.shiyou.uploader.s3;
+package com.kingsoft.shiyou.loggy;
 
-import com.kingsoft.shiyou.uploader.s3.dagger.DaggerLoggyComponent;
-import com.kingsoft.shiyou.uploader.s3.dagger.VertxModule;
-import com.kingsoft.shiyou.uploader.s3.service.LoggyService;
-import com.kingsoft.shiyou.uploader.s3.utils.vertx.AsyncUtils;
+import com.kingsoft.shiyou.loggy.dagger.DaggerLoggyComponent;
+import com.kingsoft.shiyou.loggy.dagger.VertxModule;
+import com.kingsoft.shiyou.loggy.service.LoggyService;
+import com.kingsoft.shiyou.loggy.utils.vertx.AsyncUtils;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 

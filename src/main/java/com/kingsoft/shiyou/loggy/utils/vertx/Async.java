@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3.utils.vertx;
+package com.kingsoft.shiyou.loggy.utils.vertx;
 
 import io.vertx.core.Promise;
 

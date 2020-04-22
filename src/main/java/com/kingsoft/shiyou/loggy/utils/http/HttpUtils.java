@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3.utils.http;
+package com.kingsoft.shiyou.loggy.utils.http;
 
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.jackson.DatabindCodec;

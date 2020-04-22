@@ -1,6 +1,6 @@
-package com.kingsoft.shiyou.uploader.s3.service.api.v1;
+package com.kingsoft.shiyou.loggy.service.api.v1;
 
-import com.kingsoft.shiyou.uploader.s3.service.validator.UploadValidator;
+import com.kingsoft.shiyou.loggy.service.validator.UploadValidator;
 import io.vertx.ext.web.Router;
 
 import javax.inject.Inject;

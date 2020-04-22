@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3;
+package com.kingsoft.shiyou.loggy;
 
 import org.aeonbits.owner.Config;
 

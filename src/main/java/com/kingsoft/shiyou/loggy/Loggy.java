@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3;
+package com.kingsoft.shiyou.loggy;
 
 import io.vertx.core.Launcher;
 

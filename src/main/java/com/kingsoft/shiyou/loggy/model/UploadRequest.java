@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3.model;
+package com.kingsoft.shiyou.loggy.model;
 
 import lombok.Getter;
 import lombok.Setter;

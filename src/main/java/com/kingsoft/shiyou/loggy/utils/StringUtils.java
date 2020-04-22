@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3.utils;
+package com.kingsoft.shiyou.loggy.utils;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;

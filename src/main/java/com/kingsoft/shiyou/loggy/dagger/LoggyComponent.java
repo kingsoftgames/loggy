@@ -1,6 +1,6 @@
-package com.kingsoft.shiyou.uploader.s3.dagger;
+package com.kingsoft.shiyou.loggy.dagger;
 
-import com.kingsoft.shiyou.uploader.s3.LoggyVerticle;
+import com.kingsoft.shiyou.loggy.LoggyVerticle;
 import dagger.Component;
 
 import javax.inject.Singleton;

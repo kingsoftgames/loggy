@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3.dagger;
+package com.kingsoft.shiyou.loggy.dagger;
 
 import dagger.Module;
 import dagger.Provides;

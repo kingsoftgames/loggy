@@ -1,14 +1,14 @@
-package com.kingsoft.shiyou.uploader.s3.service.api.v1;
+package com.kingsoft.shiyou.loggy.service.api.v1;
 
-import com.kingsoft.shiyou.uploader.s3.LoggyConfig;
-import com.kingsoft.shiyou.uploader.s3.constant.Compression;
-import com.kingsoft.shiyou.uploader.s3.constant.UploadResult;
-import com.kingsoft.shiyou.uploader.s3.model.UploadRequest;
-import com.kingsoft.shiyou.uploader.s3.model.UploadResponse;
-import com.kingsoft.shiyou.uploader.s3.model.UploadResponse.UploadLogs;
-import com.kingsoft.shiyou.uploader.s3.service.validator.UploadValidator;
-import com.kingsoft.shiyou.uploader.s3.utils.StringUtils;
-import com.kingsoft.shiyou.uploader.s3.utils.http.HttpUtils;
+import com.kingsoft.shiyou.loggy.LoggyConfig;
+import com.kingsoft.shiyou.loggy.constant.Compression;
+import com.kingsoft.shiyou.loggy.constant.UploadResult;
+import com.kingsoft.shiyou.loggy.model.UploadRequest;
+import com.kingsoft.shiyou.loggy.model.UploadResponse;
+import com.kingsoft.shiyou.loggy.model.UploadResponse.UploadLogs;
+import com.kingsoft.shiyou.loggy.service.validator.UploadValidator;
+import com.kingsoft.shiyou.loggy.utils.StringUtils;
+import com.kingsoft.shiyou.loggy.utils.http.HttpUtils;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

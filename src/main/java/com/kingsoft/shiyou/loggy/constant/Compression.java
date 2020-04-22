@@ -1,4 +1,4 @@
-package com.kingsoft.shiyou.uploader.s3.constant;
+package com.kingsoft.shiyou.loggy.constant;
 
 import java.util.Optional;
 

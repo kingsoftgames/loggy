@@ -1,7 +1,7 @@
-package com.kingsoft.shiyou.uploader.s3.service.validator;
+package com.kingsoft.shiyou.loggy.service.validator;
 
-import com.kingsoft.shiyou.uploader.s3.constant.UploadResult;
-import com.kingsoft.shiyou.uploader.s3.model.UploadResponse;
+import com.kingsoft.shiyou.loggy.constant.UploadResult;
+import com.kingsoft.shiyou.loggy.model.UploadResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;

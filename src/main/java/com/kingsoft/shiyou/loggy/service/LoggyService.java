@@ -1,7 +1,7 @@
-package com.kingsoft.shiyou.uploader.s3.service;
+package com.kingsoft.shiyou.loggy.service;
 
-import com.kingsoft.shiyou.uploader.s3.service.api.v1.Api;
-import com.kingsoft.shiyou.uploader.s3.utils.vertx.Async;
+import com.kingsoft.shiyou.loggy.service.api.v1.Api;
+import com.kingsoft.shiyou.loggy.utils.vertx.Async;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
