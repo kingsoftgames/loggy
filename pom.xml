@@ -19,7 +19,7 @@
     <os-maven-plugin.version>1.6.2</os-maven-plugin.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <vertx.version>3.9.0</vertx.version>
-    <awssdk.version>2.10.73</awssdk.version>
+    <awssdk.version>2.13.0</awssdk.version>
     <dagger.version>2.26</dagger.version>
     <lombok.version>1.18.12</lombok.version>
     <log4j2.version>2.11.2</log4j2.version>
