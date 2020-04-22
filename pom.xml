@@ -11,7 +11,13 @@
 
   <properties>
     <java.version>11</java.version>
+    <fat.jar.name>loggy</fat.jar.name>
+    <main.class>com.kingsoft.shiyou.uploader.s3.Loggy</main.class>
+    <main.verticle>com.kingsoft.shiyou.uploader.s3.LoggyVerticle</main.verticle>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+    <os-maven-plugin.version>1.6.2</os-maven-plugin.version>
+    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <vertx.version>3.9.0</vertx.version>
     <awssdk.version>2.10.73</awssdk.version>
     <dagger.version>2.26</dagger.version>
@@ -91,6 +97,79 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven-shade-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <filters>
+                <filter>
+                  <!--
+                    OracleJDK requires that JCA providers be cryptographically
+                    signed by a trusted certificate. But CorrettoJDK do not need this.
+                    If we include these signatures files, a SecurityException will
+                    be thrown.
+                  -->
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>${main.class}</Main-Class>
+                    <Main-Verticle>${main.verticle}</Main-Verticle>
+                    <Project-Version>${project.version}</Project-Version>
+                    <!--
+                      Declare shaded jar as Multi-Release jar.
+                      This resolves warning from StackLocator.java in log4j2 when running on Java >= 9
+                        "WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance."
+                      See "JEP 238: Multi-Release JAR Files": https://openjdk.java.net/jeps/238
+                     -->
+                    <Multi-Release>true</Multi-Release>
+                  </manifestEntries>
+                </transformer>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
+                </transformer>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/io.vertx.core.spi.launcher.CommandFactory</resource>
+                </transformer>
+              </transformers>
+              <artifactSet>
+              </artifactSet>
+              <outputFile>${project.build.directory}/${fat.jar.name}.jar
+              </outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <configuration>
+          <mainClass>io.vertx.core.Launcher</mainClass>
+          <arguments>
+            <argument>run</argument>
+            <argument>${main.verticle}</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -130,6 +209,10 @@
     <dependency>
       <groupId>org.aeonbits.owner</groupId>
       <artifactId>owner</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.dagger</groupId>
+      <artifactId>dagger</artifactId>
     </dependency>
   </dependencies>
 </project>
