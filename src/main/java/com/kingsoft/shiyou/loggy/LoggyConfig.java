@@ -62,19 +62,19 @@ public interface LoggyConfig extends Config {
     long s3PresignTtl();
 
     /**
-     * Use S3 acceleration
+     * Use S3 transfer acceleration
      */
     @Key("s3.acceleration.enabled")
     @DefaultValue("false")
     boolean s3AccelerationEnabled();
 
     /**
-     * S3 acceleration uri
+     * S3 transfer acceleration endpoint
      * See https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
      */
-    @Key("s3.acceleration.uri")
-    @DefaultValue("")
-    String s3AccelerationUri();
+    @Key("s3.acceleration.endpoint")
+    @DefaultValue("https://s3-accelerate.dualstack.amazonaws.com")
+    String s3AccelerationEndpoint();
 
     /**
      * The logs compression format

@@ -38,7 +38,7 @@ public class LoggyModule {
     @Singleton
     S3Presigner provideS3Presigner(LoggyConfig config) {
         var builder = S3Presigner.builder();
-        builder = config.s3AccelerationEnabled() ? builder.endpointOverride(URI.create(config.s3AccelerationUri()))
+        builder = config.s3AccelerationEnabled() ? builder.endpointOverride(URI.create(config.s3AccelerationEndpoint()))
                 : builder.region(Region.of(config.s3Region()));
         return builder.build();
     }
