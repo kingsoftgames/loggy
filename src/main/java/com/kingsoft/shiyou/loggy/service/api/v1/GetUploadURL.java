@@ -3,6 +3,8 @@ package com.kingsoft.shiyou.loggy.service.api.v1;
 import com.kingsoft.shiyou.loggy.LoggyConfig;
 import com.kingsoft.shiyou.loggy.constant.Compression;
 import com.kingsoft.shiyou.loggy.constant.UploadResult;
+import com.kingsoft.shiyou.loggy.db.LoggyUploadInfoStore;
+import com.kingsoft.shiyou.loggy.db.model.UploadInfo;
 import com.kingsoft.shiyou.loggy.model.UploadRequest;
 import com.kingsoft.shiyou.loggy.model.UploadResponse;
 import com.kingsoft.shiyou.loggy.model.UploadResponse.UploadLogs;
@@ -54,6 +56,9 @@ public final class GetUploadURL implements Handler<RoutingContext> {
     Vertx vertx;
 
     @Inject
+    LoggyUploadInfoStore uploadInfoStore;
+
+    @Inject
     S3Presigner s3Presigner;
 
     private static final SimpleDateFormat SDF_DAY = new SimpleDateFormat("dd");
@@ -78,10 +83,19 @@ public final class GetUploadURL implements Handler<RoutingContext> {
 
     private void handleRequest(RoutingContext rc, UploadRequest request) {
         var uploadContext = generateUploadContext(rc, request);
-        uploadLogs(uploadContext.sessionId(), Instant.now(), ar -> handleUploadLogs(uploadContext, ar));
+        uploadLogs(uploadContext, Instant.now(), ar -> handleUploadLogs(uploadContext, ar));
+        var uploadInfo = generateUploadInfo(uploadContext);
+        uploadInfoStore.saveUploadInfo(uploadInfo, ar -> {
+            if (ar.succeeded()) {
+                log.debug("Succeeded to save upload info, hash id {}, ts {}, s3 uri {}",
+                        uploadInfo.getHashId(), uploadInfo.getTimestamp(), uploadInfo.getS3Uri());
+            } else {
+                log.error("Failed to save upload info", ar.cause());
+            }
+        });
     }
 
-    private void uploadLogs(String sessionId, Instant from, Handler<AsyncResult<PresignedPutObjectRequest>> handler) {
+    private void uploadLogs(UploadContext context, Instant from, Handler<AsyncResult<PresignedPutObjectRequest>> handler) {
         var optionalCompression = Compression.of(loggyConfig.logsCompression());
         if (optionalCompression.isEmpty()) {
             var message = String.format("Unsupported compression format: %s", loggyConfig.logsCompression());
@@ -90,7 +104,8 @@ public final class GetUploadURL implements Handler<RoutingContext> {
         }
 
         var compression = optionalCompression.get();
-        var s3Key = getS3Key(sessionId, from, compression.extension());
+        var s3Key = getS3Key(context.sessionId(), from, compression.extension());
+        context.s3Key(s3Key);
         var putObjectRequest = PutObjectRequest.builder()
                 .bucket(loggyConfig.s3Bucket())
                 .key(s3Key)
@@ -162,6 +177,30 @@ public final class GetUploadURL implements Handler<RoutingContext> {
                 SDF_DAY.format(ldt.getMonth().getValue()), SDF_MONTH.format(ldt.getDayOfMonth()), session, fileExtension);
     }
 
+    private UploadInfo generateUploadInfo(UploadContext context) {
+        var message = context.message();
+        var s3Uri = String.format("s3://%s/%s", loggyConfig.s3Bucket(), context.s3Key());
+        return UploadInfo.builder()
+                .hashId(context.sessionId())
+                .timestamp(message.getBatchTimestamp())
+                .appId(message.getAppId())
+                .appVersion(message.getAppVersion())
+                .appVersionCode(message.getAppVersionCode())
+                .buildNumber(message.getBuildNumber())
+                .channel(message.getChannel())
+                .deviceBrand(message.getDeviceBrand())
+                .deviceId(message.getDeviceId())
+                .deviceModel(message.getDeviceModel())
+                .deviceScreen(message.getDeviceScreen())
+                .network(message.getNetwork())
+                .os(message.getOs())
+                .osVersion(message.getOsVersion())
+                .sgVersion(message.getSgVersion())
+                .packageName(message.getPackageName())
+                .s3Uri(s3Uri)
+                .build();
+    }
+
     private UploadContext generateUploadContext(RoutingContext rc, UploadRequest message) {
         var uuid = message.getBatchDataId();
         var ts = message.getBatchTimestamp();
@@ -190,5 +229,6 @@ public final class GetUploadURL implements Handler<RoutingContext> {
         private UploadRequest message;
         private JsonObject logs;
         private UploadLogs uploadLogs;
+        private String s3Key;
     }
 }
