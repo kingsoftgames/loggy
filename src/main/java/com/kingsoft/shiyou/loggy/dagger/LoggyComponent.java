@@ -11,7 +11,9 @@ import javax.inject.Singleton;
 @Singleton
 @Component(modules = {
     LoggyModule.class,
-    VertxModule.class
+    VertxModule.class,
+    AwsModule.class,
+    DbModule.class
 })
 public interface LoggyComponent {
     void inject(LoggyVerticle verticle);
