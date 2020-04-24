@@ -181,7 +181,7 @@ public final class FeishuClient implements NoticeClient {
             .append("deviceModel: **").append(request.getDeviceModel()).append("**\n")
             .append("os: **").append(request.getOs()).append("**\n")
             .append("osVersion: **").append(request.getOsVersion()).append("**\n")
-            .append("network: **").append(request.getDeviceScreen()).append("**\n")
+            .append("network: **").append(request.getNetwork()).append("**\n")
             .append('\n')
             .append("appVersion: **").append(request.getAppVersion()).append("**\n")
             .append("appVersionCode: **").append(request.getAppVersionCode()).append("**\n")
@@ -189,7 +189,8 @@ public final class FeishuClient implements NoticeClient {
             .append("buildNumber: **").append(request.getBuildNumber()).append("**\n")
             .append("deviceId: **").append(request.getDeviceId()).append("**\n")
             .append("deviceScreen: **").append(request.getDeviceScreen()).append("**\n")
-            .append("sgVersion: **").append(request.getSgVersion()).append("**\n");
+            .append("sgVersion: **").append(request.getSgVersion()).append("**\n")
+            .append('\n');
 
         appendLogsUrl(sb, downloadUrl);
 
