@@ -30,11 +30,11 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -61,8 +61,7 @@ public final class GetUploadURL implements Handler<RoutingContext> {
     @Inject
     S3Presigner s3Presigner;
 
-    private static final SimpleDateFormat SDF_DAY = new SimpleDateFormat("dd");
-    private static final SimpleDateFormat SDF_MONTH = new SimpleDateFormat("MM");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
     @Inject
     public GetUploadURL() {
@@ -173,8 +172,7 @@ public final class GetUploadURL implements Handler<RoutingContext> {
     private String getS3Key(String session, Instant from, String fileExtension) {
         var ldt = LocalDateTime.ofInstant(from, ZoneOffset.UTC);
 
-        return String.format("%s%s/%s/%s/%s%s", loggyConfig.s3Prefix(), ldt.getYear(),
-                SDF_DAY.format(ldt.getMonth().getValue()), SDF_MONTH.format(ldt.getDayOfMonth()), session, fileExtension);
+        return String.format("%s%s/%s%s", loggyConfig.s3Prefix(), ldt.format(formatter), session, fileExtension);
     }
 
     private Logs generateLogs(UploadContext context) {
