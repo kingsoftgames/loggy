@@ -1,6 +1,6 @@
 package com.kingsoft.shiyou.loggy.notify.client.impl;
 
-import com.kingsoft.shiyou.loggy.db.model.Logs;
+import com.kingsoft.shiyou.loggy.model.UploadRequest;
 import com.kingsoft.shiyou.loggy.notify.client.Client;
 import com.kingsoft.shiyou.loggy.notify.token.feishu.FeishuAccessTokenManager;
 import io.vertx.core.AsyncResult;
@@ -80,10 +80,10 @@ public final class FeishuClient implements Client {
     }
 
     @Override
-    public void notify(Logs logs, String downloadUrl, Handler<AsyncResult<Void>> handler) {
+    public void notify(UploadRequest request, String downloadUrl, Handler<AsyncResult<Void>> handler) {
         log.info("Sending message to Feishu");
         var httpRequest = getHttpRequest();
-        var jsonBody = getJsonBody(logs, downloadUrl);
+        var jsonBody = getJsonBody(request, downloadUrl);
         sendRequest(httpRequest, jsonBody, "", new Retry(MAX_RETRY), ar -> {
             if (ar.succeeded()) {
                 handler.handle(succeededFuture());
@@ -138,8 +138,8 @@ public final class FeishuClient implements Client {
     }
 
     // See https://open.feishu.cn/document/ukTMukTMukTM/ukTNwUjL5UDM14SO1ATN
-    private JsonObject getJsonBody(Logs logs, String downloadUrl) {
-        var content = getContent(logs, downloadUrl);
+    private JsonObject getJsonBody(UploadRequest request, String downloadUrl) {
+        var content = getContent(request, downloadUrl);
         return new JsonObject()
             .put("chat_id", feishuChannel)
             .put("msg_type", "interactive")
@@ -174,22 +174,22 @@ public final class FeishuClient implements Client {
             .put("content", content);
     }
 
-    private static String getContent(Logs logs, String downloadUrl) {
+    private static String getContent(UploadRequest request, String downloadUrl) {
         var sb = new StringBuilder(512)
-            .append("channel: **").append(logs.getChannel()).append("**\n")
-            .append("deviceBrand: **").append(logs.getDeviceBrand()).append("**\n")
-            .append("deviceModel: **").append(logs.getDeviceModel()).append("**\n")
-            .append("os: **").append(logs.getOs()).append("**\n")
-            .append("osVersion: **").append(logs.getOsVersion()).append("**\n")
-            .append("network: **").append(logs.getDeviceScreen()).append("**\n")
+            .append("channel: **").append(request.getChannel()).append("**\n")
+            .append("deviceBrand: **").append(request.getDeviceBrand()).append("**\n")
+            .append("deviceModel: **").append(request.getDeviceModel()).append("**\n")
+            .append("os: **").append(request.getOs()).append("**\n")
+            .append("osVersion: **").append(request.getOsVersion()).append("**\n")
+            .append("network: **").append(request.getDeviceScreen()).append("**\n")
             .append('\n')
-            .append("appVersion: **").append(logs.getAppVersion()).append("**\n")
-            .append("appVersionCode: **").append(logs.getAppVersionCode()).append("**\n")
-            .append("appId: **").append(logs.getAppId()).append("**\n")
-            .append("buildNumber: **").append(logs.getBuildNumber()).append("**\n")
-            .append("deviceId: **").append(logs.getDeviceId()).append("**\n")
-            .append("deviceScreen: **").append(logs.getDeviceScreen()).append("**\n")
-            .append("sgVersion: **").append(logs.getSgVersion()).append("**\n");
+            .append("appVersion: **").append(request.getAppVersion()).append("**\n")
+            .append("appVersionCode: **").append(request.getAppVersionCode()).append("**\n")
+            .append("appId: **").append(request.getAppId()).append("**\n")
+            .append("buildNumber: **").append(request.getBuildNumber()).append("**\n")
+            .append("deviceId: **").append(request.getDeviceId()).append("**\n")
+            .append("deviceScreen: **").append(request.getDeviceScreen()).append("**\n")
+            .append("sgVersion: **").append(request.getSgVersion()).append("**\n");
 
         appendLogsUrl(sb, downloadUrl);
 

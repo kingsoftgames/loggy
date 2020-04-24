@@ -1,6 +1,6 @@
 package com.kingsoft.shiyou.loggy.notify.client;
 
-import com.kingsoft.shiyou.loggy.db.model.Logs;
+import com.kingsoft.shiyou.loggy.model.UploadRequest;
 import com.kingsoft.shiyou.loggy.utils.vertx.Async;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -10,5 +10,5 @@ import io.vertx.core.Handler;
  */
 public interface Client extends Async {
 
-    void notify(Logs logs, String downloadUrl, Handler<AsyncResult<Void>> handler);
+    void notify(UploadRequest request, String downloadUrl, Handler<AsyncResult<Void>> handler);
 }
