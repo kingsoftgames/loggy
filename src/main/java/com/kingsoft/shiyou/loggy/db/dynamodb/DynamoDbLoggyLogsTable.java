@@ -37,7 +37,7 @@ public class DynamoDbLoggyLogsTable implements LoggyLogsStore {
     public DynamoDbLoggyLogsTable(DynamoDbConfig config, DynamoDbEnhancedAsyncClient client) {
         this.config = config;
         this.client = client;
-        this.tableName = config.loggyLogsTableName();
+        this.tableName = config.logsTableName();
     }
 
     @Override
