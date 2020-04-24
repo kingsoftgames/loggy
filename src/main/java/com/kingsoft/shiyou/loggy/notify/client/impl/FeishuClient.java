@@ -189,6 +189,7 @@ public final class FeishuClient implements NoticeClient {
             .append("buildNumber: **").append(request.getBuildNumber()).append("**\n")
             .append("deviceId: **").append(request.getDeviceId()).append("**\n")
             .append("deviceScreen: **").append(request.getDeviceScreen()).append("**\n")
+            .append("packageName: **").append(request.getPackageName()).append("**\n")
             .append("sgVersion: **").append(request.getSgVersion()).append("**\n")
             .append('\n');
 
