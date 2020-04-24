@@ -7,7 +7,7 @@ import java.util.Optional;
  */
 public enum Compression {
 
-    NONE("NONE", ".log", "text/plain"),
+    NONE("NONE", ".log", "text/plain; charset=utf-8"),
     ZLIB("ZLIB", ".zlib", "application/zlib"),
     ZIP("ZIP", ".zip", "application/zip"),
     GZIP("GZIP", ".gz", "application/gzip");
