@@ -137,7 +137,7 @@ public final class GetUploadURL implements Handler<RoutingContext> {
 
             var uploader = generateUploadLogs(presignedRequest);
             context.uploadLogs(uploader);
-            log.info("The presigned url of client logs: {}", presignedRequest.url());
+            log.debug("The presigned url of client logs: {}", presignedRequest.url());
 
             var response = new UploadResponse()
                     .setMessage(UploadResult.SUCCESS)
