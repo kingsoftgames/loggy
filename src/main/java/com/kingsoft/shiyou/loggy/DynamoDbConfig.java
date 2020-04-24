@@ -39,4 +39,8 @@ public interface DynamoDbConfig extends Config {
     @Key("table.throughput.write")
     @DefaultValue("1")
     long tableWriteThroughput();
+
+    @Key("table.name.loggy.logs")
+    @DefaultValue("loggy.logs")
+    String loggyLogsTableName();
 }

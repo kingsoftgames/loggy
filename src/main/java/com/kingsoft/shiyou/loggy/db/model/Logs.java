@@ -1,13 +1,16 @@
 package com.kingsoft.shiyou.loggy.db.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 /**
- * @author taoshuang on 2020/4/21.
+ * @author taoshuang on 2020/4/24.
  */
 @Getter
 @Setter
@@ -15,7 +18,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 @Builder
 @AllArgsConstructor
 @DynamoDbBean
-public final class UploadInfo {
+public final class Logs {
     private String hashId;
     private String timestamp;
     private String channel;
@@ -34,7 +37,7 @@ public final class UploadInfo {
     private String network;
     private String s3Uri;
 
-    public UploadInfo() {
+    public Logs() {
     }
 
     @DynamoDbPartitionKey

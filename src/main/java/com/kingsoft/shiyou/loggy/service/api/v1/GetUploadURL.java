@@ -3,8 +3,8 @@ package com.kingsoft.shiyou.loggy.service.api.v1;
 import com.kingsoft.shiyou.loggy.LoggyConfig;
 import com.kingsoft.shiyou.loggy.constant.Compression;
 import com.kingsoft.shiyou.loggy.constant.UploadResult;
-import com.kingsoft.shiyou.loggy.db.LoggyUploadInfoStore;
-import com.kingsoft.shiyou.loggy.db.model.UploadInfo;
+import com.kingsoft.shiyou.loggy.db.LoggyLogsStore;
+import com.kingsoft.shiyou.loggy.db.model.Logs;
 import com.kingsoft.shiyou.loggy.model.UploadRequest;
 import com.kingsoft.shiyou.loggy.model.UploadResponse;
 import com.kingsoft.shiyou.loggy.model.UploadResponse.UploadLogs;
@@ -56,7 +56,7 @@ public final class GetUploadURL implements Handler<RoutingContext> {
     Vertx vertx;
 
     @Inject
-    LoggyUploadInfoStore uploadInfoStore;
+    LoggyLogsStore loggyLogsStore;
 
     @Inject
     S3Presigner s3Presigner;
@@ -84,13 +84,13 @@ public final class GetUploadURL implements Handler<RoutingContext> {
     private void handleRequest(RoutingContext rc, UploadRequest request) {
         var uploadContext = generateUploadContext(rc, request);
         uploadLogs(uploadContext, Instant.now(), ar -> handleUploadLogs(uploadContext, ar));
-        var uploadInfo = generateUploadInfo(uploadContext);
-        uploadInfoStore.saveUploadInfo(uploadInfo, ar -> {
+        var logs = generateLogs(uploadContext);
+        loggyLogsStore.saveLogs(logs, ar -> {
             if (ar.succeeded()) {
-                log.debug("Succeeded to save upload info, hash id {}, ts {}, s3 uri {}",
-                        uploadInfo.getHashId(), uploadInfo.getTimestamp(), uploadInfo.getS3Uri());
+                log.debug("Succeeded to save logs, hash id {}, ts {}, s3 uri {}",
+                        logs.getHashId(), logs.getTimestamp(), logs.getS3Uri());
             } else {
-                log.error("Failed to save upload info", ar.cause());
+                log.error("Failed to save logs", ar.cause());
             }
         });
     }
@@ -177,10 +177,10 @@ public final class GetUploadURL implements Handler<RoutingContext> {
                 SDF_DAY.format(ldt.getMonth().getValue()), SDF_MONTH.format(ldt.getDayOfMonth()), session, fileExtension);
     }
 
-    private UploadInfo generateUploadInfo(UploadContext context) {
+    private Logs generateLogs(UploadContext context) {
         var message = context.message();
         var s3Uri = String.format("s3://%s/%s", loggyConfig.s3Bucket(), context.s3Key());
-        return UploadInfo.builder()
+        return Logs.builder()
                 .hashId(context.sessionId())
                 .timestamp(message.getBatchTimestamp())
                 .appId(message.getAppId())

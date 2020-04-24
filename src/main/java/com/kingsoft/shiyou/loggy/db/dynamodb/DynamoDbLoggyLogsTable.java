@@ -1,7 +1,8 @@
 package com.kingsoft.shiyou.loggy.db.dynamodb;
 
-import com.kingsoft.shiyou.loggy.db.LoggyUploadInfoStore;
-import com.kingsoft.shiyou.loggy.db.model.UploadInfo;
+import com.kingsoft.shiyou.loggy.DynamoDbConfig;
+import com.kingsoft.shiyou.loggy.db.LoggyLogsStore;
+import com.kingsoft.shiyou.loggy.db.model.Logs;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -23,20 +24,20 @@ import static com.kingsoft.shiyou.loggy.utils.FunctionUtils.pcall;
  * @author taoshuang on 2020/4/23.
  */
 @Log4j2
-public class DynamoDbUploadInfoTable implements LoggyUploadInfoStore {
+public class DynamoDbLoggyLogsTable implements LoggyLogsStore {
 
     private static final Expression PUT_INFO_CON_EX = Expression.builder()
             .expression("attribute_not_exists(hashId)").build();
-    private static final TableSchema<UploadInfo> TABLE_SCHEMA = TableSchema.fromBean(UploadInfo.class);
+    private static final TableSchema<Logs> TABLE_SCHEMA = TableSchema.fromBean(Logs.class);
 
-    private final LoggyDynamoDbConfig config;
+    private final DynamoDbConfig config;
     private final DynamoDbEnhancedAsyncClient client;
     private final String tableName;
 
-    public DynamoDbUploadInfoTable(LoggyDynamoDbConfig config, DynamoDbEnhancedAsyncClient client) {
+    public DynamoDbLoggyLogsTable(DynamoDbConfig config, DynamoDbEnhancedAsyncClient client) {
         this.config = config;
         this.client = client;
-        this.tableName = config.loggyUploadInfoTableName();
+        this.tableName = config.loggyLogsTableName();
     }
 
     @Override
@@ -49,12 +50,12 @@ public class DynamoDbUploadInfoTable implements LoggyUploadInfoStore {
         }
     }
 
-    private CreateTableEnhancedRequest createTableEnhancedRequest(LoggyDynamoDbConfig config) {
+    private CreateTableEnhancedRequest createTableEnhancedRequest(DynamoDbConfig config) {
         return CreateTableEnhancedRequest.builder()
                 .provisionedThroughput(ProvisionedThroughput.builder()
-                .readCapacityUnits(config.tableReadThroughput())
-                .writeCapacityUnits(config.tableWriteThroughput())
-                .build()).build();
+                        .readCapacityUnits(config.tableReadThroughput())
+                        .writeCapacityUnits(config.tableWriteThroughput())
+                        .build()).build();
     }
 
     private void createTable(Promise<Void> promise, CreateTableEnhancedRequest request) {
@@ -75,11 +76,11 @@ public class DynamoDbUploadInfoTable implements LoggyUploadInfoStore {
     }
 
     @Override
-    public void saveUploadInfo(UploadInfo uploadInfo, Handler<AsyncResult<Void>> resultHandler) {
+    public void saveLogs(Logs logs, Handler<AsyncResult<Void>> resultHandler) {
         Objects.requireNonNull(resultHandler, "resultHandler");
 
-        var request = PutItemEnhancedRequest.builder(UploadInfo.class)
-                .item(uploadInfo)
+        var request = PutItemEnhancedRequest.builder(Logs.class)
+                .item(logs)
                 .conditionExpression(PUT_INFO_CON_EX)
                 .build();
 
@@ -89,7 +90,7 @@ public class DynamoDbUploadInfoTable implements LoggyUploadInfoStore {
                 resultHandler.handle(Future.succeededFuture());
                 return;
             }
-            log.error("Failed to put upload info on dynamodb", err);
+            log.error("Failed to put logs on DynamoDb", err);
             resultHandler.handle(Future.failedFuture(err));
         }));
     }
