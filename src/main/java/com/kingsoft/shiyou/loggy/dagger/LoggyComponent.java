@@ -13,7 +13,8 @@ import javax.inject.Singleton;
     LoggyModule.class,
     VertxModule.class,
     AwsModule.class,
-    DbModule.class
+    DbModule.class,
+    NoticeModule.class
 })
 public interface LoggyComponent {
     void inject(LoggyVerticle verticle);

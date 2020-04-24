@@ -38,7 +38,6 @@ public interface LoggyConfig extends Config {
     @DefaultValue("")
     String s3Bucket();
 
-
     /**
      * S3 acl to access objects
      */
@@ -82,4 +81,36 @@ public interface LoggyConfig extends Config {
     @Key("logs.compression")
     @DefaultValue("GZIP")
     String logsCompression();
+
+    /**
+     * Is feishu push enabled
+     */
+    @Key("feishu.push.enabled")
+    @DefaultValue("true")
+    boolean feishuPushEnabled();
+
+    /**
+     * Address to get feishu access token
+     */
+    @Key("feishu.app.id")
+    String feishuAppId();
+
+    /**
+     * Address to get feishu access token
+     */
+    @Key("feishu.app.secret")
+    String feishuAppSecret();
+
+    /**
+     * Feishu channel to push to
+     */
+    @Key("feishu.channel")
+    String feishuChannel();
+
+    /**
+     * Feishu request timeout in ms.
+     */
+    @Key("feishu.request.timeout")
+    @DefaultValue("5000")
+    long feishuRequestTimeoutMs();
 }

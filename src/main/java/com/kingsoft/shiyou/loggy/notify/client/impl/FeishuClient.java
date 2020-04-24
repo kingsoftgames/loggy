@@ -1,7 +1,7 @@
 package com.kingsoft.shiyou.loggy.notify.client.impl;
 
 import com.kingsoft.shiyou.loggy.model.UploadRequest;
-import com.kingsoft.shiyou.loggy.notify.client.Client;
+import com.kingsoft.shiyou.loggy.notify.client.NoticeClient;
 import com.kingsoft.shiyou.loggy.notify.token.feishu.FeishuAccessTokenManager;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -28,10 +28,10 @@ import static io.vertx.core.Future.succeededFuture;
  */
 @Log4j2
 @Singleton
-public final class FeishuClient implements Client {
+public final class FeishuClient implements NoticeClient {
 
     private static final String PUSH_ADDR = "https://open.feishu.cn/open-apis/message/v4/send/";
-    private static final long RETRY_PUSH_INTERVAL = 10L;
+    private static final long RETRY_PUSH_INTERVAL = 30L;
     private static final int MAX_RETRY = 3;
     private static final boolean IS_WIDE_SCREEN = true;
 
