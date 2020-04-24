@@ -167,7 +167,7 @@ public final class GetUploadURL implements Handler<RoutingContext> {
             if (ar.succeeded()) {
                 log.debug("Succeeded to notify client logs");
             } else {
-                log.error("Failed to notify client logs");
+                log.error("Failed to notify client logs", ar.cause());
             }
         });
     }
