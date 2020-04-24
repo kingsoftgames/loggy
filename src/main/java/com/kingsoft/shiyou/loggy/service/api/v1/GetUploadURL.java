@@ -8,6 +8,7 @@ import com.kingsoft.shiyou.loggy.db.model.Logs;
 import com.kingsoft.shiyou.loggy.model.UploadRequest;
 import com.kingsoft.shiyou.loggy.model.UploadResponse;
 import com.kingsoft.shiyou.loggy.model.UploadResponse.UploadLogs;
+import com.kingsoft.shiyou.loggy.notify.client.NoticeClient;
 import com.kingsoft.shiyou.loggy.service.validator.UploadValidator;
 import com.kingsoft.shiyou.loggy.utils.StringUtils;
 import com.kingsoft.shiyou.loggy.utils.http.HttpUtils;
@@ -54,6 +55,9 @@ public final class GetUploadURL implements Handler<RoutingContext> {
 
     @Inject
     Vertx vertx;
+
+    @Inject
+    NoticeClient noticeClient;
 
     @Inject
     LoggyLogsStore loggyLogsStore;
@@ -133,21 +137,39 @@ public final class GetUploadURL implements Handler<RoutingContext> {
     private void handleUploadLogs(UploadContext context, AsyncResult<PresignedPutObjectRequest> ar) {
         if (ar.succeeded()) {
             var presignedRequest = ar.result();
-
-            var uploader = generateUploadLogs(presignedRequest);
-            context.uploadLogs(uploader);
-            log.debug("The presigned url of client logs: {}", presignedRequest.url());
-
-            var response = new UploadResponse()
-                    .setMessage(UploadResult.SUCCESS)
-                    .setUploadLogs(uploader);
-            context.rc().response()
-                    .putHeader("Content-Type", "application/json")
-                    .end(Json.encode(response));
+            responseToClient(context, presignedRequest);
+            if (loggyConfig.feishuPushEnabled()) {
+                notifyFeishu(context, presignedRequest);
+            }
         } else {
             log.error("Failed to upload logs", ar.cause());
             context.rc().fail(500);
         }
+    }
+
+    private void responseToClient(UploadContext context, PresignedPutObjectRequest presignedRequest) {
+        var uploader = generateUploadLogs(presignedRequest);
+        context.uploadLogs(uploader);
+        log.debug("The presigned url of client logs: {}", presignedRequest.url());
+
+        var response = new UploadResponse()
+                .setMessage(UploadResult.SUCCESS)
+                .setUploadLogs(uploader);
+        context.rc().response()
+                .putHeader("Content-Type", "application/json")
+                .end(Json.encode(response));
+    }
+
+    private void notifyFeishu(UploadContext context, PresignedPutObjectRequest presignedRequest) {
+        var downloadUrl = getS3DownloadUrl(presignedRequest);
+        log.debug("The download url of client logs: {}", downloadUrl);
+        noticeClient.notify(context.message(), downloadUrl, ar -> {
+            if (ar.succeeded()) {
+                log.debug("Succeeded to notify client logs");
+            } else {
+                log.error("Failed to notify client logs");
+            }
+        });
     }
 
     private UploadLogs generateUploadLogs(PresignedPutObjectRequest presignedRequest) {
@@ -173,6 +195,11 @@ public final class GetUploadURL implements Handler<RoutingContext> {
         var ldt = LocalDateTime.ofInstant(from, ZoneOffset.UTC);
 
         return String.format("%s%s/%s%s", loggyConfig.s3Prefix(), ldt.format(formatter), session, fileExtension);
+    }
+
+    private String getS3DownloadUrl(PresignedPutObjectRequest presignedRequest) {
+        return String.format("https://%s%s", presignedRequest.httpRequest().host(),
+                presignedRequest.httpRequest().encodedPath());
     }
 
     private Logs generateLogs(UploadContext context) {
