@@ -23,6 +23,8 @@ public final class Api {
     }
 
     public void registerRoutes(Router router) {
+        // External health check
+        router.get("/").handler(rc -> rc.response().end("OK"));
         router.post("/GetUploadURL").handler(uploadValidator).handler(getUploadURL);
     }
 }
