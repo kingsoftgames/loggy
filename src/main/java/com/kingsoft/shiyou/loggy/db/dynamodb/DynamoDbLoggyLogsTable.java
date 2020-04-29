@@ -14,6 +14,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.CreateTableEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest;
+import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 import software.amazon.awssdk.services.dynamodb.model.ProvisionedThroughput;
 import software.amazon.awssdk.services.dynamodb.model.ResourceInUseException;
 
@@ -88,6 +89,11 @@ public class DynamoDbLoggyLogsTable implements LoggyLogsStore {
 
         logsTable.putItem(request).whenComplete((v, err) -> pcall(() -> {
             if (err == null) {
+                resultHandler.handle(Future.succeededFuture());
+                return;
+            }
+            if (err.getCause() instanceof ConditionalCheckFailedException) {
+                log.debug("Found write to an existed item");
                 resultHandler.handle(Future.succeededFuture());
                 return;
             }
