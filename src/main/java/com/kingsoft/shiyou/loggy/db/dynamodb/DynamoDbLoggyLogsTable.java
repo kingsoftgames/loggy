@@ -8,6 +8,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import lombok.extern.log4j.Log4j2;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
@@ -33,11 +34,13 @@ public class DynamoDbLoggyLogsTable implements LoggyLogsStore {
     private final DynamoDbConfig config;
     private final DynamoDbEnhancedAsyncClient client;
     private final String tableName;
+    private final DynamoDbAsyncTable<Logs> logsTable;
 
     public DynamoDbLoggyLogsTable(DynamoDbConfig config, DynamoDbEnhancedAsyncClient client) {
         this.config = config;
         this.client = client;
         this.tableName = config.logsTableName();
+        this.logsTable = client.table(tableName, TABLE_SCHEMA);
     }
 
     @Override
@@ -59,8 +62,7 @@ public class DynamoDbLoggyLogsTable implements LoggyLogsStore {
     }
 
     private void createTable(Promise<Void> promise, CreateTableEnhancedRequest request) {
-        client.table(tableName, TABLE_SCHEMA)
-                .createTable(request).whenComplete((v, err) -> pcall(() -> {
+        logsTable.createTable(request).whenComplete((v, err) -> pcall(() -> {
             if (err == null) {
                 log.info("DynamoDb table created successfully: {}", tableName);
                 promise.complete();
@@ -84,8 +86,7 @@ public class DynamoDbLoggyLogsTable implements LoggyLogsStore {
                 .conditionExpression(PUT_INFO_CON_EX)
                 .build();
 
-        client.table(tableName, TABLE_SCHEMA)
-                .putItem(request).whenComplete((v, err) -> pcall(() -> {
+        logsTable.putItem(request).whenComplete((v, err) -> pcall(() -> {
             if (err == null) {
                 resultHandler.handle(Future.succeededFuture());
                 return;
